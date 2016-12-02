@@ -65,7 +65,7 @@ public class SignTest {
 
     @Test
     public void testVerifyCode() {
-        String url = "http://localhost:8080/sign/getVerifyCode?phone={phone}";
+        String url = "http://localhost:8080/sign/sendVerifyCode?phone={phone}";
         HttpResult forObject = template.getForObject(url, HttpResult.class, "18311362505");
         System.out.println(forObject.toString());
     }

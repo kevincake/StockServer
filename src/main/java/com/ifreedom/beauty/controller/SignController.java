@@ -3,11 +3,11 @@ package com.ifreedom.beauty.controller;
 import com.ifreedom.beauty.authorization.manager.TokenManager;
 import com.ifreedom.beauty.authorization.model.TokenModel;
 import com.ifreedom.beauty.bean.HttpResult;
-import com.ifreedom.beauty.constants.AuthorizationConstants;
 import com.ifreedom.beauty.constants.HttpConstants;
 import com.ifreedom.beauty.entity.UserEntity;
 import com.ifreedom.beauty.service.UserService;
-import com.ifreedom.beauty.sms.SMSUtil;
+import com.ifreedom.beauty.sms.SMSManager;
+import com.ifreedom.beauty.sms.SMSSender;
 import com.ifreedom.beauty.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -26,10 +26,13 @@ public class SignController {
     UserService userService;
     @Autowired
     private TokenManager tokenManager;
+    @Autowired
+    SMSSender smsSender;
+
 
     @ResponseBody
     @RequestMapping(value = HttpConstants.SIGN_UP, method = RequestMethod.POST)
-    public HttpResult signUp(@RequestParam Map<String, String> params) {
+    public HttpResult signUp(@RequestBody  Map<String, String> params) {
         HttpResult result = new HttpResult();
         String userName = params.get(HttpConstants.NAME);
         String phone = params.get(HttpConstants.PHONE);
@@ -80,6 +83,29 @@ public class SignController {
         return result;
     }
 
+
+    @ResponseBody
+    @RequestMapping(value = HttpConstants.AUTO_SIGN_IN, method = RequestMethod.GET)
+    public HttpResult atuoSignIn(@RequestParam("token") String token) {
+        TokenModel tokenModel = tokenManager.getToken(token);
+        String userId = tokenModel.getUserId();
+        HttpResult result = new HttpResult();
+        UserEntity userEntity = null;
+        if (com.ifreedom.beauty.util.StringUtils.isEmpty(userId)) {
+            userEntity = userService.getUser(Long.parseLong(userId));
+        }
+        if (userEntity == null) {
+            result.setResultCode(HttpConstants.AUTO_SIGN_FAILED_CODE);
+            result.setMsg(PropertyUtil.getProperty("autoSignFailed"));
+        } else {
+            result.getData().put(HttpConstants.TOKEN, tokenModel.getToken());
+            result.setResultCode(HttpConstants.SUCCESS);
+            result.getData().put(HttpConstants.USER, userEntity);
+
+        }
+        return result;
+    }
+
     @ResponseBody
     @RequestMapping(value = "/isPhoneRegister", method = RequestMethod.GET)
     public HttpResult getIsPhoneRegister(@RequestParam("phone") String phone) {
@@ -97,7 +123,7 @@ public class SignController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getVerifyCode", method = RequestMethod.GET)
+    @RequestMapping(value = "/sendVerifyCode", method = RequestMethod.GET)
     public HttpResult getVerifyCode(@RequestParam("phone") String phone) {
         HttpResult result = new HttpResult();
         boolean isRegister = userService.isPhoneRegister(phone);
@@ -105,7 +131,7 @@ public class SignController {
             result.setResultCode(HttpConstants.FAILED);
             result.setMsg(PropertyUtil.getProperty("phoneHasRegister"));
         } else {
-            SMSUtil.getVerifyCode(phone);
+            smsSender.sendVerifyCode(phone);
             result.setResultCode(HttpConstants.SUCCESS);
 
         }

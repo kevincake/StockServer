@@ -26,9 +26,9 @@ public class HttpConstants {
     public static final String USERID_PATH = "/{userId}";
 
 
-
     //path
-    public static final String SIGN_IN =  "/signIn";
+    public static final String SIGN_IN = "/signIn";
+    public static final String AUTO_SIGN_IN = "/autoSignIn";
     public static final String SIGN_UP = "/signUp";
     public static final String COURSE_CONTROL_PATH = "/course";
     public static final String SIGN_CONTROL_PATH = "/sign";
@@ -52,6 +52,7 @@ public class HttpConstants {
     public static final String ARTICLE_LIST = "articleList";
     public static final String MINE_SOCIAL = "mineSocial";
     public static final String ADD_COURSE = "/addCourse";
-    public static final String SOCIAL = "social" ;
+    public static final String SOCIAL = "social";
     public static final Object GOODSLIST = "goodsList";
+    public static final int AUTO_SIGN_FAILED_CODE = 2000;
 }

@@ -6,15 +6,18 @@ import com.ifreedom.beauty.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @atuhor:eavawu
  * @date:26/11/2016
  * @todo:
  */
 @Service
-public class StockService implements IStockService{
+public class StockService implements IStockService {
     @Autowired
     StockRepository stockRepository;
+
     @Override
     public StockEntity addStock(StockEntity stockEntity) {
         return stockRepository.addStock(stockEntity);
@@ -33,5 +36,14 @@ public class StockService implements IStockService{
     @Override
     public StockEntity query(long id) {
         return stockRepository.query(id);
+    }
+
+    @Override
+    public List<StockEntity> queryMyAllStocks(Long userId) {
+        return stockRepository.queryMyAllStocks(userId);
+    }
+
+    public StockEntity queryByStockCode(String stockCode) {
+        return stockRepository.queryByStockCode(stockCode);
     }
 }

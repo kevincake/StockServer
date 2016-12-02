@@ -26,6 +26,7 @@ public class TecentStock implements IStock {
             TecentMyStockInfo.DataBean.ListBean listBean = tecentMyStockInfo.getData().getList().get(i);
             MyStockQueryInfo myStockQueryInfo = new MyStockQueryInfo();
             myStockQueryInfo.setStockCode(listBean.getSymbol());
+            myStockQueryInfo.setStockChannel(listBean.getCode().substring(0, listBean.getCode().indexOf(listBean.getSymbol())));
             myStockQueryInfo.setStockName(listBean.getName());
             myStockQueryInfo.setPrecent(listBean.getZdf());
             myStockQueryInfo.setChange(listBean.getZd());

@@ -32,6 +32,10 @@ public class RedisTokenManager implements TokenManager {
         redis.setValueSerializer(new StringRedisSerializer());
     }
 
+    public RedisTemplate<String, String> getRedis(){
+        return redis;
+    }
+
     public TokenModel createToken(long userId) {
         //使用uuid作为源token
         String token = UUID.randomUUID().toString().replace("-", "");

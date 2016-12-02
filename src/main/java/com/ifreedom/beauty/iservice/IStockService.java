@@ -2,6 +2,8 @@ package com.ifreedom.beauty.iservice;
 
 import com.ifreedom.beauty.entity.StockEntity;
 
+import java.util.List;
+
 /**
  * @atuhor:eavawu
  * @date:26/11/2016
@@ -17,4 +19,5 @@ public interface IStockService {
     StockEntity query(long id);
 
 
+    List<StockEntity> queryMyAllStocks(Long userId);
 }

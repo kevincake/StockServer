@@ -93,7 +93,6 @@ public class StockTest {
         StockEntity stockEntity = new StockEntity();
         stockEntity.setStockCode("000001");
         stockEntity.setStockChannel("sz");
-        stockEntity.setCountry("cn");
         stockEntityList.add(stockEntity);
         List<MyStockQueryInfo> stockQueryInfos = tecentStock.queryStockInfo(stockEntityList);
         System.out.println(stockQueryInfos.toString());
