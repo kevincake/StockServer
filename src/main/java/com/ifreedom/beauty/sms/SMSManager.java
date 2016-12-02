@@ -6,6 +6,7 @@ package com.ifreedom.beauty.sms;
  * @todo:
  */
 public interface SMSManager {
-    public void createSMS(String phone, String code);
-    public String getSMS(String phone);
+    void createSMS(String phone, String code);
+    String getSMSCode(String phone);
+    void remove(String phone);
 }

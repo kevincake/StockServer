@@ -21,8 +21,9 @@ import java.util.Random;
 @Component
 public class SMSSender {
     @Autowired
-    private  SMSManager smsManager;
-    public  void sendVerifyCode(String phone) {
+    private SMSManager smsManager;
+
+    public void sendVerifyCode(String phone) {
         IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAIrEydNfYJIeOb", "UIJ3onncXzrDyabhFUNfZxSMHJssG5");
         try {
             DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", "Sms", "sms.aliyuncs.com");

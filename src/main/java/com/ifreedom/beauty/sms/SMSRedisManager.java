@@ -19,16 +19,21 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class SMSRedisManager implements SMSManager {
     @Autowired
-    RedisTokenManager tokenManager;
+    StringRedisTemplate stringRedisTemplate;
 
     @Override
     public void createSMS(String phone, String code) {
-        tokenManager.getRedis().boundValueOps("SMS_" + phone).set(code + "", SMSConstans.SMS_ALIVE_MINUTE, TimeUnit.MINUTES);
+        stringRedisTemplate.boundValueOps("SMS_" + phone).set(code + "", SMSConstans.SMS_ALIVE_MINUTE, TimeUnit.MINUTES);
     }
 
     @Override
-    public String getSMS(String phone) {
-        return tokenManager.getRedis().boundValueOps("SMS_" + phone).get();
+    public String getSMSCode(String phone) {
+        return stringRedisTemplate.boundValueOps("SMS_" + phone).get();
+    }
+
+    @Override
+    public void remove(String phone) {
+        stringRedisTemplate.delete("SMS_"+phone);
     }
 
 

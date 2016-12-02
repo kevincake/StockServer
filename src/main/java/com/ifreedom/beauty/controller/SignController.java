@@ -28,14 +28,23 @@ public class SignController {
     private TokenManager tokenManager;
     @Autowired
     SMSSender smsSender;
+    @Autowired
+    SMSManager smsManager;
 
 
     @ResponseBody
     @RequestMapping(value = HttpConstants.SIGN_UP, method = RequestMethod.POST)
-    public HttpResult signUp(@RequestBody  Map<String, String> params) {
+    public HttpResult signUp(@RequestBody Map<String, String> params) {
         HttpResult result = new HttpResult();
         String userName = params.get(HttpConstants.NAME);
         String phone = params.get(HttpConstants.PHONE);
+        String verifyCode = params.get(HttpConstants.VERIFY_CODE);
+        String saveCode = smsManager.getSMSCode(phone);
+        if (StringUtils.isEmpty(saveCode) || StringUtils.isEmpty(verifyCode) || !verifyCode.equals(saveCode)) {
+            result.setResultCode(HttpConstants.FAILED);
+            result.setMsg(PropertyUtil.getProperty("verifyCodeError"));
+            return result;
+        }
         UserEntity userEntity = new UserEntity();
         userEntity.setName(userName);
         userEntity.setPhone(phone);
@@ -62,6 +71,7 @@ public class SignController {
             result.getData().put(HttpConstants.USER, saveUser);
             result.getData().put(HttpConstants.TOKEN, model.getToken());
         }
+        smsManager.remove(phone);
         return result;
     }
 
@@ -131,8 +141,15 @@ public class SignController {
             result.setResultCode(HttpConstants.FAILED);
             result.setMsg(PropertyUtil.getProperty("phoneHasRegister"));
         } else {
-            smsSender.sendVerifyCode(phone);
-            result.setResultCode(HttpConstants.SUCCESS);
+            String smsCode = smsManager.getSMSCode(phone);
+            if (!com.ifreedom.beauty.util.StringUtils.isEmpty(smsCode)){
+                result.setMsg(PropertyUtil.getProperty("verifycode_busy"));
+            }else{
+                result.setResultCode(HttpConstants.SUCCESS);
+                smsSender.sendVerifyCode(phone);
+            }
+
+
 
         }
         return result;

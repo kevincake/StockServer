@@ -55,4 +55,5 @@ public class HttpConstants {
     public static final String SOCIAL = "social";
     public static final Object GOODSLIST = "goodsList";
     public static final int AUTO_SIGN_FAILED_CODE = 2000;
+    public static final String VERIFY_CODE = "verifyCode";
 }
