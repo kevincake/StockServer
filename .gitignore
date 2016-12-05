@@ -5,3 +5,6 @@ BeautyServer.iml
 
 out/artifacts/BeautyServer_jar/BeautyServer.jar
 out/
+*.iml
+
+*.iml

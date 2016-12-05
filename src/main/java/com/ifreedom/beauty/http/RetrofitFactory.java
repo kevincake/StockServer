@@ -2,6 +2,7 @@ package com.ifreedom.beauty.http;
 
 import com.ifreedom.beauty.constants.RetrofitConstants;
 import com.sun.javafx.iio.common.ScalerFactory;
+import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -14,6 +15,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class RetrofitFactory {
     public static final String TECENT_QUERY_BASE_URL = "http://123.151.15.200/";
     public static final String TECENT_SEARCH_BASE_URL = "http://proxy.finance.qq.com";
+    public static final String SJTL = "https://api.wmcloud.com";
 
     public static Retrofit getRetrofit(int type) {
         switch (type) {
@@ -27,6 +29,15 @@ public class RetrofitFactory {
                         .baseUrl(TECENT_SEARCH_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
                         .build();
+            case RetrofitConstants.SJTL_HOST:
+                OkHttpClient SJTLOKClient = new OkHttpClient().newBuilder().
+                        hostnameVerifier(new HostnameVerify()).
+                        socketFactory(SSLFactory.getSJTLFactory()).addInterceptor(new HeaderInterceptor()).build();
+                return new Retrofit.Builder().baseUrl(SJTL).
+                        addConverterFactory(GsonConverterFactory.create()).
+                        client(SJTLOKClient).build();
+
+
             default:
                 return new Retrofit.Builder()
                         .baseUrl(TECENT_QUERY_BASE_URL)

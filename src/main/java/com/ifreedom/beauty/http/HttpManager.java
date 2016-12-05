@@ -71,4 +71,7 @@ public class HttpManager {
         }
         return myStockQueryInfoList;
     }
+
+
 }
+

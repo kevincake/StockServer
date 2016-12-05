@@ -23,6 +23,7 @@ public class ApplicationStartUpListener implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         PropertyUtil.loadAllProperties();
+
         System.out.println("ApplicationStartUpListener");
     }
 }

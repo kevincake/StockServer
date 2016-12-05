@@ -20,4 +20,8 @@ public interface IStockService {
 
 
     List<StockEntity> queryMyAllStocks(Long userId);
+
+
+
+
 }

@@ -14,4 +14,5 @@ public interface IStock {
     List<MyStockQueryInfo> queryStockInfo(List<StockEntity> stockList);
     List<String> getSymbolList(List<StockEntity> stockList);
     List<MyStockQueryInfo> searchStock(String searchkey);
+    List<MyStockQueryInfo> queryAllStock();
 }

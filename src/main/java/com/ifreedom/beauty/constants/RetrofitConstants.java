@@ -9,4 +9,5 @@ public class RetrofitConstants {
     public static final int TECENT_QUERY = 1;
 
     public static final int TECENT_SEARCH = 2;
+    public static final int SJTL_HOST = 3;
 }

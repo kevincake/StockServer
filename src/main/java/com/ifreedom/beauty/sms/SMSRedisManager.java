@@ -1,7 +1,6 @@
 package com.ifreedom.beauty.sms;
 
 import com.ifreedom.beauty.authorization.manager.impl.RedisTokenManager;
-import com.ifreedom.beauty.redis.RedisBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
