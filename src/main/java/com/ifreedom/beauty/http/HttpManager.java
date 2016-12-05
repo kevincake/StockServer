@@ -3,10 +3,13 @@ package com.ifreedom.beauty.http;
 import com.ifreedom.beauty.bean.MyStockQueryInfo;
 import com.ifreedom.beauty.bean.SJTLAllStock;
 import com.ifreedom.beauty.bean.TecentMyStockInfo;
+import com.ifreedom.beauty.constants.HttpConstants;
 import com.ifreedom.beauty.constants.RetrofitConstants;
 import com.ifreedom.beauty.constants.SJTLConstants;
+import com.ifreedom.beauty.entity.AllStockEntity;
 import com.ifreedom.beauty.http.stock.SJTLApi;
 import com.ifreedom.beauty.http.stock.TecentApi;
+import com.ifreedom.beauty.util.CharacterEncodeConverter;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
@@ -78,15 +81,43 @@ public class HttpManager {
     }
 
     //从数据通联服务器获取所有的股票代码
-    public static void getAllStockInfoFromSJTL(){
+    public static List<AllStockEntity> getAllStockInfoFromSJTL() {
+        List<AllStockEntity> stockList = new ArrayList<>();
         Retrofit retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.SJTL_HOST);
-        Call<SJTLAllStock> result  = retrofit.create(SJTLApi.class).getAllStockInfo("A");
+        Call<SJTLAllStock> result = retrofit.create(SJTLApi.class).getAllStockInfo("A");
+
         try {
             SJTLAllStock body = result.execute().body();
-            System.out.println(body.toString() );
+            if (body.getRetCode() != HttpConstants.SUCCESS) {
+                return null;
+            }
+
+            List<AllStockEntity> allStockEntities = covert(body);
+            System.out.println(allStockEntities);
+            return allStockEntities;
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
+
+    }
+
+    private static List<AllStockEntity> covert(SJTLAllStock sjtlAllStock) {
+        List<AllStockEntity> allStockEntityList = new ArrayList<>();
+        for (int i = 0; i < sjtlAllStock.getData().size(); i++) {
+            AllStockEntity allStockEntity = new AllStockEntity();
+            SJTLAllStock.DataBean dataBean = sjtlAllStock.getData().get(i);
+            if (dataBean.getExchangeCD().equals("XSHG")) {
+                allStockEntity.setStockChannel("sh");
+            } else {
+                allStockEntity.setStockChannel("sz");
+            }
+            allStockEntity.setToMaketDate(dataBean.getListDate());
+            allStockEntity.setStockName(dataBean.getSecShortName());
+            allStockEntity.setStockCode(dataBean.getTicker());
+            allStockEntityList.add(allStockEntity);
+        }
+        return allStockEntityList;
     }
 
     public static void main(String[] args) {

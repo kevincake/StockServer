@@ -1,11 +1,15 @@
 package com.ifreedom.beauty.scheduler;
 
+import com.ifreedom.beauty.entity.AllStockEntity;
 import com.ifreedom.beauty.http.HttpManager;
+import com.ifreedom.beauty.iservice.IAllStockSerice;
 import com.ifreedom.beauty.iservice.IStockService;
+import com.ifreedom.beauty.service.AllStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -17,45 +21,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StockShedule {
     @Autowired
     private AsyncWorker worker;
+
+
     @Autowired
-    IStockService stockService;
+    AllStockService allStockSerice;
     private final AtomicInteger counter = new AtomicInteger();
 
-    @Scheduled(fixedRate = 3000, initialDelay = 1 * 1000)
-    public void report1() {
-        for (int i = 0; i < 10; i++) {
-            worker.work("reportCurrentTime1 - " + counter.incrementAndGet());
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Scheduled(fixedRate = 3000, initialDelay = 1 * 1000)
-    public void report2() {
-        for (int i = 0; i < 10; i++) {
-            worker.work("reportCurrentTime2 - " + counter.incrementAndGet());
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-
-                e.printStackTrace();
-            }
-        }
-    }
 
 
-    @Scheduled(fixedRate = 3000, initialDelay = 1 * 1000)
-    public void getRealTimeStock(){
+
+    @Scheduled(cron="0 0/30 6-7 * * *")   //6-7点,半小时执行一次
+    public void getRealTimeStock() {
+        System.out.println("getRealTimeStock=====>begin");
         worker.work(new Runnable() {
             @Override
             public void run() {
-
+        List<AllStockEntity> allStockInfoFromSJTL = HttpManager.getInstance().getAllStockInfoFromSJTL();
+        allStockSerice.saveAll(allStockInfoFromSJTL);
+        System.out.println("getRealTimeStock=====>success");
             }
         });
     }

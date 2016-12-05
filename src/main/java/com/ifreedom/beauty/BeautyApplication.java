@@ -11,8 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * Created by eavawu on 4/26/16.
  */
 @SpringBootApplication
-@EnableScheduling
-@EnableAsync
+
 public class BeautyApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
 

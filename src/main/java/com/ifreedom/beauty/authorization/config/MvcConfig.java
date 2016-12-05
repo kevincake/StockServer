@@ -4,6 +4,8 @@ import com.ifreedom.beauty.authorization.interceptor.AuthorizationInterceptor;
 import com.ifreedom.beauty.authorization.resolvers.CurrentUserMethodArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -19,6 +21,9 @@ import java.util.List;
  * @date 2015/7/30.
  */
 @Configuration
+@EnableWebMvc
+@EnableScheduling
+@EnableAsync
 public class MvcConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
