@@ -1,8 +1,11 @@
 package com.ifreedom.beauty.http;
 
 import com.ifreedom.beauty.bean.MyStockQueryInfo;
+import com.ifreedom.beauty.bean.SJTLAllStock;
 import com.ifreedom.beauty.bean.TecentMyStockInfo;
 import com.ifreedom.beauty.constants.RetrofitConstants;
+import com.ifreedom.beauty.constants.SJTLConstants;
+import com.ifreedom.beauty.http.stock.SJTLApi;
 import com.ifreedom.beauty.http.stock.TecentApi;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -30,6 +33,7 @@ public class HttpManager {
         return httpManager;
     }
 
+    //根据股票代码.在腾讯服务器查询股票信息
     public TecentMyStockInfo queryTecentMyStockInfo(List<String> symbolList) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < symbolList.size(); i++) {
@@ -50,6 +54,7 @@ public class HttpManager {
         return null;
     }
 
+    //从腾讯服务器搜索股票信息
     public List<MyStockQueryInfo> searchTecentMyStockInfo(String searchkey) {
         List<MyStockQueryInfo> myStockQueryInfoList = new ArrayList<>();
         Call<String> searchResult = RetrofitFactory.getRetrofit(RetrofitConstants.TECENT_SEARCH).create(TecentApi.class).searchStock(searchkey, "all");
@@ -72,6 +77,20 @@ public class HttpManager {
         return myStockQueryInfoList;
     }
 
+    //从数据通联服务器获取所有的股票代码
+    public static void getAllStockInfoFromSJTL(){
+        Retrofit retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.SJTL_HOST);
+        Call<SJTLAllStock> result  = retrofit.create(SJTLApi.class).getAllStockInfo("A");
+        try {
+            SJTLAllStock body = result.execute().body();
+            System.out.println(body.toString() );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public static void main(String[] args) {
+        getAllStockInfoFromSJTL();
+    }
 }
 

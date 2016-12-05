@@ -55,4 +55,9 @@ public class TecentStock implements IStock {
         List<MyStockQueryInfo> stockQueryInfos = HttpManager.getInstance().searchTecentMyStockInfo(searchkey);
         return stockQueryInfos;
     }
+
+    @Override
+    public List<MyStockQueryInfo> queryAllStock() {
+        return null;
+    }
 }

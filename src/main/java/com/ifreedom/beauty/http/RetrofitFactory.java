@@ -1,11 +1,14 @@
 package com.ifreedom.beauty.http;
 
 import com.ifreedom.beauty.constants.RetrofitConstants;
+import com.ifreedom.beauty.http.interceptoer.SJTLHeaderInterceptor;
 import com.sun.javafx.iio.common.ScalerFactory;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @atuhor:eavawu
@@ -30,12 +33,13 @@ public class RetrofitFactory {
                         .addConverterFactory(ScalarsConverterFactory.create())
                         .build();
             case RetrofitConstants.SJTL_HOST:
-                OkHttpClient SJTLOKClient = new OkHttpClient().newBuilder().
-                        hostnameVerifier(new HostnameVerify()).
-                        socketFactory(SSLFactory.getSJTLFactory()).addInterceptor(new HeaderInterceptor()).build();
-                return new Retrofit.Builder().baseUrl(SJTL).
-                        addConverterFactory(GsonConverterFactory.create()).
-                        client(SJTLOKClient).build();
+                OkHttpClient SJTLOKClient = new OkHttpClient().newBuilder()
+                        .readTimeout(100, TimeUnit.SECONDS)
+//                        hostnameVerifier(new HostnameVerify())
+                        .addInterceptor(new SJTLHeaderInterceptor()).build();
+                return new Retrofit.Builder().baseUrl(SJTL)
+                        .addConverterFactory(GsonConverterFactory.create()).
+                                client(SJTLOKClient).build();
 
 
             default:

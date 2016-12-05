@@ -69,4 +69,9 @@ public class YahooStock implements IStock {
     public List<MyStockQueryInfo> searchStock(String searchkey) {
         return null;
     }
+
+    @Override
+    public List<MyStockQueryInfo> queryAllStock() {
+        return null;
+    }
 }
