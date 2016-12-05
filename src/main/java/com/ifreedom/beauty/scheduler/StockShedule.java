@@ -28,17 +28,15 @@ public class StockShedule {
     private final AtomicInteger counter = new AtomicInteger();
 
 
-
-
-    @Scheduled(cron="0 0/30 6-7 * * *")   //6-7点,半小时执行一次
-    public void getRealTimeStock() {
-        System.out.println("getRealTimeStock=====>begin");
+    @Scheduled(cron = "0 0/30 1-2 * * *")   //1-2点,半小时执行一次
+    public void updateAllStock() {
+        System.out.println("updateAllStock=====>begin");
         worker.work(new Runnable() {
             @Override
             public void run() {
-        List<AllStockEntity> allStockInfoFromSJTL = HttpManager.getInstance().getAllStockInfoFromSJTL();
-        allStockSerice.saveAll(allStockInfoFromSJTL);
-        System.out.println("getRealTimeStock=====>success");
+                List<AllStockEntity> allStockInfoFromSJTL = HttpManager.getInstance().getAllStockInfoFromSJTL();
+                allStockSerice.saveAll(allStockInfoFromSJTL);
+                System.out.println("updateAllStock=====>success");
             }
         });
     }
