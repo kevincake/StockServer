@@ -1,21 +1,20 @@
 package com.ifreedom.beauty.http;
 
-import com.ifreedom.beauty.bean.MyStockQueryInfo;
-import com.ifreedom.beauty.bean.SJTLAllStock;
-import com.ifreedom.beauty.bean.TecentMyStockInfo;
+import com.ifreedom.beauty.bean.*;
 import com.ifreedom.beauty.constants.HttpConstants;
 import com.ifreedom.beauty.constants.RetrofitConstants;
-import com.ifreedom.beauty.constants.SJTLConstants;
 import com.ifreedom.beauty.entity.AllStockEntity;
+import com.ifreedom.beauty.entity.AllStockHistory;
+import com.ifreedom.beauty.http.stock.IFengApi;
 import com.ifreedom.beauty.http.stock.SJTLApi;
 import com.ifreedom.beauty.http.stock.TecentApi;
-import com.ifreedom.beauty.util.CharacterEncodeConverter;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.DoubleAccumulator;
 
 /**
  * @atuhor:eavawu
@@ -28,7 +27,7 @@ public class HttpManager {
     private Retrofit retrofit;
 
     private HttpManager() {
-        retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.TECENT_QUERY);
+        retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.TECENT_QUERY_TYPE);
     }
 
 
@@ -60,7 +59,7 @@ public class HttpManager {
     //从腾讯服务器搜索股票信息
     public List<MyStockQueryInfo> searchTecentMyStockInfo(String searchkey) {
         List<MyStockQueryInfo> myStockQueryInfoList = new ArrayList<>();
-        Call<String> searchResult = RetrofitFactory.getRetrofit(RetrofitConstants.TECENT_SEARCH).create(TecentApi.class).searchStock(searchkey, "all");
+        Call<String> searchResult = RetrofitFactory.getRetrofit(RetrofitConstants.TECENT_SEARCH_TYPE).create(TecentApi.class).searchStock(searchkey, "all");
         try {
             String body = searchResult.execute().body();
             String content = body.substring("v_hint=".length(), body.length());
@@ -83,7 +82,7 @@ public class HttpManager {
     //从数据通联服务器获取所有的股票代码
     public static List<AllStockEntity> getAllStockInfoFromSJTL() {
         List<AllStockEntity> stockList = new ArrayList<>();
-        Retrofit retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.SJTL_HOST);
+        Retrofit retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.SJTL_TYPE);
         Call<SJTLAllStock> result = retrofit.create(SJTLApi.class).getAllStockInfo("A");
 
         try {
@@ -92,7 +91,7 @@ public class HttpManager {
                 return null;
             }
 
-            List<AllStockEntity> allStockEntities = covert(body);
+            List<AllStockEntity> allStockEntities = covertSJTL(body);
             System.out.println(allStockEntities);
             return allStockEntities;
         } catch (IOException e) {
@@ -102,7 +101,7 @@ public class HttpManager {
 
     }
 
-    private static List<AllStockEntity> covert(SJTLAllStock sjtlAllStock) {
+    private static List<AllStockEntity> covertSJTL(SJTLAllStock sjtlAllStock) {
         List<AllStockEntity> allStockEntityList = new ArrayList<>();
         for (int i = 0; i < sjtlAllStock.getData().size(); i++) {
             AllStockEntity allStockEntity = new AllStockEntity();
@@ -120,8 +119,41 @@ public class HttpManager {
         return allStockEntityList;
     }
 
+
+    //从凤凰财经的服务器拉取的单只股票的历史信息
+    public static List<AllStockHistory> getOneStockAllHistory(String channel, String code, String type) {
+        List<AllStockHistory> allStockHistory = new ArrayList<>();
+        Retrofit retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.IFENG_TYPE);
+        Call<IFengStock> call = retrofit.create(IFengApi.class).getOneStockHistory(channel+code, type);
+        IFengStock iFengStock = null;
+        try {
+            iFengStock = call.execute().body();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (iFengStock == null || iFengStock.getRecord() == null || iFengStock.getRecord().size() <= 0) {
+            return null;
+        }
+        for (int i = 0; i < iFengStock.getRecord().size(); i++) {
+            List<String> oneRecord = iFengStock.getRecord().get(i);
+            AllStockHistory oneStockHistory = new AllStockHistory();
+            oneStockHistory.setStockCode(code);
+            oneStockHistory.setStockChannel(channel);
+            oneStockHistory.setDate(oneRecord.get(0));
+            oneStockHistory.setOpen(Double.parseDouble(oneRecord.get(1)));
+            oneStockHistory.setHigh(Double.parseDouble(oneRecord.get(2)));
+            oneStockHistory.setClose(Double.parseDouble(oneRecord.get(3)));
+            oneStockHistory.setLow(Double.parseDouble(oneRecord.get(4)));
+            oneStockHistory.setVolume(Double.parseDouble(oneRecord.get(5)));
+            oneStockHistory.setAmount(Double.parseDouble(oneRecord.get(6)));
+            allStockHistory.add(oneStockHistory);
+        }
+        return allStockHistory;
+    }
+
     public static void main(String[] args) {
-        getAllStockInfoFromSJTL();
+        List<AllStockHistory> oneStockAllHistory = getOneStockAllHistory("sz", "000875", "last");
+        System.out.println(oneStockAllHistory);
     }
 }
 

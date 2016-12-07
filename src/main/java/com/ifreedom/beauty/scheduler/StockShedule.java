@@ -41,4 +41,10 @@ public class StockShedule {
         });
     }
 
+    @Scheduled(cron = "0 0/30 1-2 * * *")
+    public void notifyUsers(){
+
+    }
+
+
 }

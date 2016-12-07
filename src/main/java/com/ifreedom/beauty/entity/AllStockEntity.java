@@ -12,7 +12,6 @@ import javax.persistence.*;
 public class AllStockEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;//主键
     private String stockCode;
     private String stockName;
     private String stockChannel;
@@ -26,13 +25,6 @@ public class AllStockEntity {
         this.toMaketDate = toMaketDate;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getStockCode() {
         return stockCode;
@@ -61,7 +53,6 @@ public class AllStockEntity {
     @Override
     public String toString() {
         return "AllStockEntity{" +
-                "id=" + id +
                 ", stockCode='" + stockCode + '\'' +
                 ", stockName='" + stockName + '\'' +
                 ", stockChannel='" + stockChannel + '\'' +
