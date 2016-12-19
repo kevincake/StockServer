@@ -40,4 +40,11 @@ public class AllStockRepository {
         nativeQuery.executeUpdate();
 
     }
+
+    public List<AllStockEntity> getAll() {
+        String sql = "select * from all_stock";
+        Query nativeQuery = entityManager.createNativeQuery(sql, AllStockEntity.class);
+        List<AllStockEntity> resultList = nativeQuery.getResultList();
+        return resultList;
+    }
 }

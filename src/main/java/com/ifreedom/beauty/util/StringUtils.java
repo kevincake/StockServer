@@ -72,4 +72,12 @@ public class StringUtils {
 
     }
 
+    public static String getHighPriceStr(String dayStr,double price){
+        return String.format(PropertyUtil.getProperty("ma_high"),dayStr,price);
+    }
+    public static String getLowPriceStr(String dayStr,double price){
+        return String.format(PropertyUtil.getProperty("ma_low"),dayStr,price);
+    }
+
+
 }

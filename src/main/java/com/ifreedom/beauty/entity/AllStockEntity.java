@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Table(name = "all_stock")
 public class AllStockEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String stockCode;
     private String stockName;
     private String stockChannel;

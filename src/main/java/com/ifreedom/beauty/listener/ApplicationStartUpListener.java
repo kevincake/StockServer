@@ -1,6 +1,8 @@
 package com.ifreedom.beauty.listener;
 
+import com.ifreedom.beauty.datacenter.DataManager;
 import com.ifreedom.beauty.util.PropertyUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.test.SpringApplicationContextLoader;
 import org.springframework.context.ApplicationContextInitializer;
@@ -18,12 +20,12 @@ import javax.servlet.ServletException;
  * @todo:
  */
 public class ApplicationStartUpListener implements WebApplicationInitializer {
-
+    @Autowired
+    DataManager dataManager;
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         PropertyUtil.loadAllProperties();
-
         System.out.println("ApplicationStartUpListener");
     }
 }

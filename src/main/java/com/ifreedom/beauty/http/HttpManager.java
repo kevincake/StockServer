@@ -4,17 +4,16 @@ import com.ifreedom.beauty.bean.*;
 import com.ifreedom.beauty.constants.HttpConstants;
 import com.ifreedom.beauty.constants.RetrofitConstants;
 import com.ifreedom.beauty.entity.AllStockEntity;
-import com.ifreedom.beauty.entity.AllStockHistory;
-import com.ifreedom.beauty.http.stock.IFengApi;
-import com.ifreedom.beauty.http.stock.SJTLApi;
-import com.ifreedom.beauty.http.stock.TecentApi;
+import com.ifreedom.beauty.entity.AllStockHistoryEntity;
+import com.ifreedom.beauty.http.api.SJTLApi;
+import com.ifreedom.beauty.http.api.TecentApi;
+import com.ifreedom.beauty.http.impl.FqLineLogic;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.DoubleAccumulator;
 
 /**
  * @atuhor:eavawu
@@ -80,7 +79,7 @@ public class HttpManager {
     }
 
     //从数据通联服务器获取所有的股票代码
-    public static List<AllStockEntity> getAllStockInfoFromSJTL() {
+    public  List<AllStockEntity> getAllStockInfoFromSJTL() {
         List<AllStockEntity> stockList = new ArrayList<>();
         Retrofit retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.SJTL_TYPE);
         Call<SJTLAllStock> result = retrofit.create(SJTLApi.class).getAllStockInfo("A");
@@ -120,40 +119,31 @@ public class HttpManager {
     }
 
 
-    //从凤凰财经的服务器拉取的单只股票的历史信息
-    public static List<AllStockHistory> getOneStockAllHistory(String channel, String code, String type) {
-        List<AllStockHistory> allStockHistory = new ArrayList<>();
-        Retrofit retrofit = RetrofitFactory.getRetrofit(RetrofitConstants.IFENG_TYPE);
-        Call<IFengStock> call = retrofit.create(IFengApi.class).getOneStockHistory(channel+code, type);
-        IFengStock iFengStock = null;
-        try {
-            iFengStock = call.execute().body();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (iFengStock == null || iFengStock.getRecord() == null || iFengStock.getRecord().size() <= 0) {
-            return null;
-        }
-        for (int i = 0; i < iFengStock.getRecord().size(); i++) {
-            List<String> oneRecord = iFengStock.getRecord().get(i);
-            AllStockHistory oneStockHistory = new AllStockHistory();
-            oneStockHistory.setStockCode(code);
-            oneStockHistory.setStockChannel(channel);
-            oneStockHistory.setDate(oneRecord.get(0));
-            oneStockHistory.setOpen(Double.parseDouble(oneRecord.get(1)));
-            oneStockHistory.setHigh(Double.parseDouble(oneRecord.get(2)));
-            oneStockHistory.setClose(Double.parseDouble(oneRecord.get(3)));
-            oneStockHistory.setLow(Double.parseDouble(oneRecord.get(4)));
-            oneStockHistory.setVolume(Double.parseDouble(oneRecord.get(5)));
-            oneStockHistory.setAmount(Double.parseDouble(oneRecord.get(6)));
-            allStockHistory.add(oneStockHistory);
-        }
-        return allStockHistory;
+//
+
+
+    public static void getAllStockRealTime(){
+
     }
 
+//    public static void get
+
+
+
     public static void main(String[] args) {
-        List<AllStockHistory> oneStockAllHistory = getOneStockAllHistory("sz", "000875", "last");
-        System.out.println(oneStockAllHistory);
+//        getOneStockAllHistory();
+//        List<AllStockHistoryEntity> oneStockAllHistory = HttpManager.getInstance().getOneStockHistory();
+//        System.out.println(oneStockAllHistory);
+    }
+
+//    private List<AllStockHistoryEntity> getOneStockHistory(String channel, String code) {
+//        FqLineLogic fqLineLogic = new FqLineLogic();
+//        List<AllStockHistoryEntity> oneStockHistory = fqLineLogic.getOneStockHistory(channel, code);
+//        return oneStockHistory;
+//    }
+
+    public static List<AllStockHistoryEntity> getOneStockAllHistory(String stockChannel, String stockCode) {
+        return FqLineLogic.getOneStockHistory(stockChannel,stockCode);
     }
 }
 

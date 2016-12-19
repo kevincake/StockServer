@@ -1,5 +1,7 @@
 package com.ifreedom.beauty.http;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ifreedom.beauty.constants.RetrofitConstants;
 import com.ifreedom.beauty.http.interceptoer.SJTLHeaderInterceptor;
 import okhttp3.OkHttpClient;
@@ -19,6 +21,8 @@ public class RetrofitFactory {
     public static final String TECENT_SEARCH_BASE_URL = "http://proxy.finance.qq.com";
     public static final String SJTL = "https://api.wmcloud.com";
     public static final String IFENG = "http://api.finance.ifeng.com/";
+    public static final String FQ_LINE = "http://web.ifzq.gtimg.cn";
+    public static final String SINA = "http://vip.stock.finance.sina.com.cn";
     public static Retrofit getRetrofit(int type) {
         switch (type) {
             case RetrofitConstants.TECENT_QUERY_TYPE:
@@ -43,6 +47,22 @@ public class RetrofitFactory {
                 return new Retrofit.Builder()
                         .baseUrl(IFENG)
                         .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+            case RetrofitConstants.FQ_LINETYPE:
+                return new Retrofit.Builder()
+                        .baseUrl(FQ_LINE)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+            case RetrofitConstants.SINA_TYPE:
+                OkHttpClient SINAOKClient = new OkHttpClient().newBuilder()
+                        .readTimeout(100, TimeUnit.SECONDS).build();
+                Gson gson = new GsonBuilder()
+                        .setLenient()
+                        .create();
+                return new Retrofit.Builder()
+                        .client(SINAOKClient)
+                        .baseUrl(SINA)
+                        .addConverterFactory(GsonConverterFactory.create(gson))
                         .build();
             default:
                 return new Retrofit.Builder()

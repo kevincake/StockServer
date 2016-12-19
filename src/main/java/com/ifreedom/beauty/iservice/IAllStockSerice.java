@@ -10,5 +10,7 @@ import java.util.List;
  * @todo:
  */
 public interface IAllStockSerice {
-    public boolean saveAll(List<AllStockEntity> allStockEntityList);
+    boolean saveAll(List<AllStockEntity> allStockEntityList);
+
+    List<AllStockEntity> getAllStock();
 }

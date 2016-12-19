@@ -38,8 +38,8 @@ public class StockTest {
 //        HttpHeaders headers = new HttpHeaders();
 //        headers.setAccept(Arrays.asList(MediaType.TEXT_PLAIN));
 //        List<String> stockList = new ArrayList<>();
-//        stockList.add("INTC");
-//        stockList.add("AIR.PA");
+//        stockList.addOrUpdate("INTC");
+//        stockList.addOrUpdate("AIR.PA");
 //
 ////        String result = template.postForObject(url, request, String.class);
 //        System.out.println(result);
@@ -47,19 +47,19 @@ public class StockTest {
 
     @Test
     public void testStock() {
-//        Stock stock = null;
+//        Stock api = null;
 //        try {
-//            stock = YahooFinance.get("INTC");
+//            api = YahooFinance.get("INTC");
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
 //
-//        BigDecimal price = stock.getQuote().getPrice();
+//        BigDecimal price = api.getQuote().getPrice();
 
 
 //        Calendar from = Calendar.getInstance();
 //        Calendar to = Calendar.getInstance();
-//        from.add(Calendar.YEAR, -1); // from 1 year ago
+//        from.addOrUpdate(Calendar.YEAR, -1); // from 1 year ago
 //
 //        Stock google = null;
 //        try {
@@ -72,16 +72,16 @@ public class StockTest {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-//        BigDecimal change = stock.getQuote().getChangeInPercent();
-//        BigDecimal peg = stock.getStats().getPeg();
-//        BigDecimal dividend = stock.getDividend().getAnnualYieldPercent();
+//        BigDecimal change = api.getQuote().getChangeInPercent();
+//        BigDecimal peg = api.getStats().getPeg();
+//        BigDecimal dividend = api.getDividend().getAnnualYieldPercent();
 //        List<HistoricalQuote> historicalQuotes = null;
 //        try {
-//         //   historicalQuotes = stock.getHistory();
+//         //   historicalQuotes = api.getHistory();
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-//        stock.print();
+//        api.print();
 //        System.out.println(price);
     }
 

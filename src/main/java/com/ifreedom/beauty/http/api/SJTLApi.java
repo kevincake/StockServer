@@ -1,10 +1,8 @@
-package com.ifreedom.beauty.http.stock;
+package com.ifreedom.beauty.http.api;
 
 import com.ifreedom.beauty.bean.SJTLAllStock;
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 /**

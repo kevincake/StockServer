@@ -20,7 +20,11 @@ public class AllStockService implements IAllStockSerice {
 
     @Override
     public boolean saveAll(List<AllStockEntity> allStockEntityList) {
-        allStockRepository.clear();
         return allStockRepository.saveAll(allStockEntityList);
+    }
+
+    @Override
+    public List<AllStockEntity> getAllStock() {
+        return allStockRepository.getAll();
     }
 }

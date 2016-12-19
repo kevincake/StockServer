@@ -8,8 +8,8 @@ import javax.persistence.*;
  * @todo:
  */
 @Entity
-@Table(name = "all_stock")
-public class AllStockHistory {
+@Table(name = "all_stock_history")
+public class AllStockHistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -105,7 +105,7 @@ public class AllStockHistory {
 
     @Override
     public String toString() {
-        return "AllStockHistory{" +
+        return "AllStockHistoryEntity{" +
                 "id=" + id +
                 ", stockCode='" + stockCode + '\'' +
                 ", stockChannel='" + stockChannel + '\'' +
