@@ -48,30 +48,29 @@ public class SignController {
         UserEntity userEntity = new UserEntity();
         userEntity.setName(userName);
         userEntity.setPhone(phone);
-        userEntity.setSex(Integer.parseInt(params.get(HttpConstants.SEX)));
+        userEntity.setSex(Integer.parseInt(params.get(HttpConstants.SEX)==null||params.get(HttpConstants.SEX)==""?"-1":params.get(HttpConstants.SEX)));
         userEntity.setAvatar(params.get(HttpConstants.AVATAR));
         userEntity.setSignature(PropertyUtil.getProperty("signtureDefault"));
         userEntity.setPassword(params.get(HttpConstants.PASSWORD));
-        UserEntity saveUser = userService.saveUser(userEntity);
+
         if (userName == null || StringUtils.isEmpty(userName)) {
             result.setResultCode(HttpConstants.FAILED);
             result.setMsg(PropertyUtil.getProperty("userNameNotNull"));
         } else if (StringUtils.isEmpty(userEntity.getPhone())) {
             result.setResultCode(HttpConstants.FAILED);
             result.setMsg(PropertyUtil.getProperty("phoneNotNull"));
-        } else if (StringUtils.isEmpty(userEntity.getAvatar())) {
-            result.setResultCode(HttpConstants.FAILED);
-            result.setMsg(PropertyUtil.getProperty("avatarNotNull"));
-        } else if (!com.ifreedom.beauty.util.StringUtils.isPwdValid(userEntity.getPassword())) {
+        }  else if (!com.ifreedom.beauty.util.StringUtils.isPwdValid(userEntity.getPassword())) {
             result.setResultCode(HttpConstants.FAILED);
             result.setMsg(PropertyUtil.getProperty("passwordFormatError"));
         } else {
+            UserEntity saveUser = userService.saveUser(userEntity);
             TokenModel model = tokenManager.createToken(saveUser.getId());
             result.setResultCode(HttpConstants.SUCCESS);
             result.getData().put(HttpConstants.USER, saveUser);
             result.getData().put(HttpConstants.TOKEN, model.getToken());
+            smsManager.remove(phone);
         }
-        smsManager.remove(phone);
+
         return result;
     }
 
@@ -154,5 +153,34 @@ public class SignController {
         }
         return result;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/verifyCode", method = RequestMethod.GET)
+    public HttpResult verifyCode(@RequestParam("phone")String phone,@RequestParam("code")String verifyCode){
+        HttpResult result = new HttpResult();
+        if (StringUtils.isEmpty(verifyCode)||StringUtils.isEmpty(phone)){
+            result.setResultCode(HttpConstants.FAILED);
+            result.setMsg(PropertyUtil.getProperty("param_not_null"));
+            return result;
+        }
+        String smsCode = smsManager.getSMSCode(phone);
+        if (StringUtils.isEmpty(smsCode)){
+            result.setResultCode(HttpConstants.FAILED);
+            result.setMsg(PropertyUtil.getProperty("param_not_null"));
+            return result;
+        }
+        if (!smsCode.equals(verifyCode)){
+            result.setResultCode(HttpConstants.FAILED);
+            result.setMsg(PropertyUtil.getProperty("verifyCodeError"));
+            return result;
+        }
+        //更新验证码时间为十分钟
+        smsManager.updateRegisterAliveTime(phone,verifyCode);
+        result.setResultCode(HttpConstants.SUCCESS);
+        return result;
+
+
+    }
+
 
 }

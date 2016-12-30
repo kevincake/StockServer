@@ -9,4 +9,5 @@ public interface SMSManager {
     void createSMS(String phone, String code);
     String getSMSCode(String phone);
     void remove(String phone);
+    void updateRegisterAliveTime(String phone,String code);
 }

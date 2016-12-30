@@ -35,5 +35,11 @@ public class SMSRedisManager implements SMSManager {
         stringRedisTemplate.delete("SMS_"+phone);
     }
 
+    @Override
+    public void updateRegisterAliveTime(String phone,String code) {
+        stringRedisTemplate.boundValueOps("SMS_" + phone).set(code + "", SMSConstans.SMS_REGISTER_ALIVE_MINUTE, TimeUnit.MINUTES);
+
+    }
+
 
 }
